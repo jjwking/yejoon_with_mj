@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>예준이와 무준쌤의 수학공부 🎱</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Black+Han+Sans&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #12151c;
+    --surface2: #1a1e28;
+    --surface3: #222738;
+    --border: rgba(255,255,255,0.06);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e6e8f0;
+    --text2: #8890aa;
+    --text3: #4a5068;
+    --accent: #4f8ef7;
+    --accent2: #3370d4;
+    --rose: #f76c8a;
+    --rose2: #d44d68;
+    --gold: #f5c842;
+    --gold2: #c9a020;
+    --green: #38d9a9;
+    --red: #f87171;
+    --radius: 12px;
+    --radius-lg: 18px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* 배경 그라디언트 느낌 */
+  body::before {
+    content:'';
+    position:fixed;
+    top:-200px; left:-200px;
+    width:600px; height:600px;
+    background: radial-gradient(circle, rgba(79,142,247,0.05) 0%, transparent 70%);
+    pointer-events:none;
+    z-index:0;
+  }
+  body::after {
+    content:'';
+    position:fixed;
+    bottom:-200px; right:-200px;
+    width:600px; height:600px;
+    background: radial-gradient(circle, rgba(247,108,138,0.05) 0%, transparent 70%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .app { display: flex; height: 100vh; position:relative; z-index:1; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 230px;
+    min-width: 230px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface3) transparent;
+  }
+
+  /* 로고/프로필 영역 */
+  .logo {
+    padding: 20px 18px 16px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+  .teacher-avatar {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--rose);
+    margin: 0 auto 10px;
+    display: block;
+    box-shadow: 0 0 16px rgba(247,108,138,0.3);
+  }
+  .logo-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 16px;
+    color: var(--text);
+    letter-spacing: 0.5px;
+  }
+  .logo-title span { color: var(--rose); }
+  .logo-sub {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 4px;
+    letter-spacing: 0.3px;
+  }
+
+  .sidebar-section { padding: 12px 12px 6px; }
+  .sidebar-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text3);
+    padding: 0 8px;
+    margin-bottom: 4px;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text2);
+    transition: all 0.15s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+  .menu-item:hover { background: var(--surface2); color: var(--text); }
+  .menu-item.active { background: rgba(79,142,247,0.15); color: var(--accent); }
+  .menu-icon { font-size: 15px; width: 18px; text-align: center; }
+
+  .chapter-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12.5px;
+    color: var(--text2);
+    transition: all 0.15s;
+  }
+  .chapter-item:hover { background: var(--surface2); color: var(--text); }
+  .chapter-item.active { background: rgba(247,108,138,0.12); color: var(--rose); }
+  .chapter-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--text3);
+    flex-shrink: 0;
+  }
+  .chapter-item.active .chapter-dot { background: var(--rose); }
+
+  /* 점수 */
+  .score-area {
+    padding: 14px 12px;
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+  }
+  .score-row { display: flex; gap: 8px; margin-top: 8px; }
+  .score-badge {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 8px 6px;
+    text-align: center;
+  }
+  .score-num { font-size: 20px; font-weight: 700; color: var(--green); }
+  .score-lbl { font-size: 10px; color: var(--text3); margin-top: 1px; }
+
+  /* Main */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Topbar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    gap: 12px;
+  }
+  .topbar-title { font-size: 15px; font-weight: 500; flex: 1; }
+  .mode-tabs { display: flex; gap: 4px; }
+  .mode-tab {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    background: none;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .mode-tab:hover { border-color: var(--rose); color: var(--rose); }
+  .mode-tab.active { background: var(--rose); border-color: var(--rose); color: #fff; }
+
+  /* Content */
+  .content { flex: 1; display: flex; overflow: hidden; }
+  .chat-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface3) transparent;
+  }
+
+  /* 메시지 버블 */
+  .msg {
+    display: flex;
+    gap: 12px;
+    max-width: 100%;
+    animation: fadeUp 0.3s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .msg.user { flex-direction: row-reverse; }
+  .msg-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .msg.ai .msg-avatar { background: transparent; padding: 0; overflow: hidden; }
+  .msg.ai .msg-avatar img { width: 34px; height: 34px; object-fit: cover; border-radius: 50%; border: 1px solid var(--rose); }
+  .msg.user .msg-avatar { background: rgba(79,142,247,0.2); color: var(--accent); font-weight: 700; }
+
+  .msg-body { max-width: 78%; }
+  .msg-name { font-size: 11px; color: var(--text3); margin-bottom: 4px; padding: 0 4px; }
+  .msg.user .msg-name { text-align: right; }
+
+  .msg-bubble {
+    padding: 13px 16px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .msg.ai .msg-bubble {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-top-left-radius: 4px;
+  }
+  .msg.user .msg-bubble {
+    background: rgba(79,142,247,0.15);
+    border: 1px solid rgba(79,142,247,0.25);
+    border-top-right-radius: 4px;
+    text-align: right;
+  }
+  .msg-bubble strong { color: var(--rose); font-weight: 600; }
+  .msg-bubble .formula {
+    background: var(--surface3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: monospace;
+    font-size: 13px;
+    color: #93c5fd;
+    margin: 8px 0;
+    display: block;
+    text-align: left;
+  }
+  .msg-bubble .tip {
+    background: rgba(247,200,66,0.08);
+    border-left: 3px solid var(--gold);
+    padding: 8px 12px;
+    border-radius: 0 8px 8px 0;
+    margin: 8px 0;
+    font-size: 13px;
+    color: var(--text2);
+    text-align: left;
+  }
+  .msg-bubble .heart {
+    color: var(--rose);
+  }
+
+  /* 문제 카드 */
+  .problem-card {
+    background: var(--surface3);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin: 8px 0;
+    text-align: left;
+  }
+  .problem-card .prob-num {
+    font-size: 11px;
+    color: var(--rose);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .problem-card .prob-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .choices { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .choice-btn {
+    padding: 9px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .choice-btn:hover:not(:disabled) { border-color: var(--rose); color: var(--text); }
+  .choice-btn.correct { border-color: var(--green); color: var(--green); background: rgba(56,217,169,0.08); }
+  .choice-btn.wrong { border-color: var(--red); color: var(--red); background: rgba(248,113,113,0.08); }
+
+  /* 단답형 */
+  .answer-row {
+    display: flex; gap: 8px; margin-top: 10px; align-items: center;
+  }
+  .answer-input {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .answer-input:focus { border-color: var(--rose); }
+  .answer-input.correct { border-color: var(--green); }
+  .answer-input.wrong { border-color: var(--red); }
+  .submit-ans {
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: var(--rose);
+    color: #fff;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s;
+  }
+  .submit-ans:hover { opacity: 0.85; }
+
+  /* 결과 배지 */
+  .result-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+  .result-badge.ok { background: rgba(56,217,169,0.15); color: var(--green); }
+  .result-badge.ng { background: rgba(248,113,113,0.12); color: var(--red); }
+
+  /* 공식 패널 */
+  .formula-panel {
+    width: 240px;
+    min-width: 240px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 18px 14px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface3) transparent;
+  }
+  .panel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 14px;
+    letter-spacing: 0.5px;
+  }
+  .formula-card {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .formula-card-title {
+    font-size: 11px;
+    color: var(--rose);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+  .formula-card-body {
+    font-size: 12.5px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+  .formula-card-body code {
+    color: #93c5fd;
+    font-family: monospace;
+    background: var(--surface3);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  /* 입력 영역 */
+  .input-area {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .quick-btns {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .quick-btn {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: none;
+    color: var(--text2);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .quick-btn:hover { border-color: var(--rose); color: var(--rose); }
+  .input-row { display: flex; gap: 10px; align-items: flex-end; }
+  .user-input {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    resize: none;
+    max-height: 120px;
+    transition: border-color 0.15s;
+    line-height: 1.5;
+  }
+  .user-input:focus { border-color: var(--rose); }
+  .send-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--rose);
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .send-btn:hover { background: var(--rose2); transform: scale(1.05); }
+  .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* 로딩 점 */
+  .typing-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--rose);
+    animation: blink 1.2s infinite;
+    margin: 0 2px;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink {
+    0%,80%,100% { opacity: 0.2; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1.1); }
+  }
+
+  /* API키 모달 */
+  .modal-bg {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+    backdrop-filter: blur(4px);
+  }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    width: 420px;
+    max-width: 90vw;
+  }
+  .modal-teacher {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .modal-teacher img {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--rose);
+  }
+  .modal-greeting {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .modal-greeting strong { color: var(--rose); }
+  .modal h3 {
+    font-size: 14px;
+    color: var(--text2);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .modal input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    margin-bottom: 14px;
+    transition: border-color 0.15s;
+  }
+  .modal input:focus { border-color: var(--rose); }
+  .modal-btn {
+    width: 100%;
+    padding: 11px;
+    border-radius: 10px;
+    background: var(--rose);
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s;
+  }
+  .modal-btn:hover { opacity: 0.88; }
+
+  /* 진행률 바 */
+  .progress-bar {
+    height: 3px;
+    background: var(--surface3);
+    border-radius: 2px;
+    margin: 6px 0 0;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--rose), var(--accent));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .chapter-meta {
+    font-size: 10px;
+    color: var(--text3);
+    margin-left: auto;
+  }
+
+  /* API 변경 버튼 */
+  .api-change-btn {
+    width:100%; background:none;
+    border:1px solid var(--border2);
+    color:var(--text3);
+    border-radius:8px;
+    padding:7px 10px;
+    font-size:11px;
+    cursor:pointer;
+    margin-bottom:10px;
+    transition:all 0.15s;
+    font-family:inherit;
+  }
+  .api-change-btn:hover { border-color:var(--rose); color:var(--rose); }
+</style>
+</head>
+<body>
+
+<!-- API키 모달 -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <div class="modal-teacher">
+      <img src="https://raw.githubusercontent.com/jjwking/mathwithTS/main/moo1.png" alt="무준쌤" id="modal-img" onerror="this.style.display='none'">
+      <div class="modal-greeting">
+        안녕 예준아! 👋<br>
+        오늘부터 너와 수학공부를 함께할<br>
+        <strong>무준쌤</strong>이야 😊
+      </div>
+    </div>
+    <h3>🔑 API 키를 입력해주세요</h3>
+    <input type="password" id="api-input" placeholder="sk-ant-..." />
+    <button class="modal-btn" onclick="saveApiKey()">공부 시작하기 🚀</button>
+  </div>
+</div>
+
+<div class="app">
+  <!-- 사이드바 -->
+  <div class="sidebar">
+    <div class="logo">
+      <img class="teacher-avatar"
+           src="https://raw.githubusercontent.com/jjwking/mathwithTS/main/moo2.jpg"
+           alt="무준쌤"
+           onerror="this.src='https://raw.githubusercontent.com/jjwking/mathwithTS/main/moo1.png'">
+      <div class="logo-title">예준이와 <span>무준쌤</span></div>
+      <div class="logo-sub">중학교 3학년 수학</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">메뉴</div>
+      <button class="menu-item active" onclick="goHome()">
+        <span class="menu-icon">🏠</span> 홈
+      </button>
+      <button class="menu-item" onclick="showFormulas()">
+        <span class="menu-icon">📐</span> 공식 모음
+      </button>
+      <button class="menu-item" onclick="showWrongNote()">
+        <span class="menu-icon">📝</span> 오답노트
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">단원</div>
+      <div id="chapter-list"></div>
+    </div>
+
+    <div class="score-area">
+      <button class="api-change-btn" onclick="clearApiKey()">🔑 API 키 변경</button>
+      <div style="font-size:11px;color:var(--text3);padding:0 4px;margin-bottom:4px;">오늘의 성적</div>
+      <div class="score-row">
+        <div class="score-badge">
+          <div class="score-num" id="total-correct">0</div>
+          <div class="score-lbl">맞은 문제</div>
+        </div>
+        <div class="score-badge">
+          <div class="score-num" id="total-wrong" style="color:var(--red);">0</div>
+          <div class="score-lbl">틀린 문제</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 메인 -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="mode-title">💡 개념 학습</div>
+      <div class="mode-tabs">
+        <button class="mode-tab active" id="tab-study" onclick="switchMode('study')">개념</button>
+        <button class="mode-tab" id="tab-quiz" onclick="switchMode('quiz')">문제</button>
+        <button class="mode-tab" id="tab-exam" onclick="switchMode('exam')">시험</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="chat-panel">
+        <div class="messages" id="messages"></div>
+        <div class="input-area">
+          <div class="quick-btns" id="quick-btns"></div>
+          <div class="input-row">
+            <textarea class="user-input" id="user-input" rows="1"
+              placeholder="무준쌤한테 질문하기..."
+              onkeydown="handleKey(event)"
+              oninput="autoResize(this)"></textarea>
+            <button class="send-btn" id="send-btn" onclick="sendMessage()">↑</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-panel" id="formula-panel">
+        <div class="panel-title">📌 핵심 공식</div>
+        <div id="formula-cards"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.ANTHROPIC_API_KEY = localStorage.getItem('yejun_moojoon_api_key') || '';
+
+const MOOJOON_IMGS = [
+  'https://raw.githubusercontent.com/jjwking/mathwithTS/main/moo1.png',
+  'https://raw.githubusercontent.com/jjwking/mathwithTS/main/moo2.jpg'
+];
+function getRandomMoojoon() {
+  return MOOJOON_IMGS[Math.floor(Math.random() * MOOJOON_IMGS.length)];
+}
+
+// 중3 커리큘럼
+const CHAPTERS = [
+  {
+    id: 'c1', title: '제곱근과 실수',
+    emoji: '√',
+    formulas: [
+      { title: '제곱근의 뜻', body: '<code>a ≥ 0</code>일 때, <code>a</code>의 양의 제곱근: <code>√a</code>' },
+      { title: '√a² = |a|', body: 'a ≥ 0이면 <code>√(a²) = a</code><br>a < 0이면 <code>√(a²) = -a</code>' },
+      { title: '제곱근의 곱셈', body: '<code>√a × √b = √(ab)</code><br>(단, a≥0, b≥0)' },
+      { title: '분모의 유리화', body: '<code>a/√b = a√b/b</code>' },
+    ]
+  },
+  {
+    id: 'c2', title: '인수분해',
+    emoji: '✕',
+    formulas: [
+      { title: '합차 공식', body: '<code>a²-b² = (a+b)(a-b)</code>' },
+      { title: '완전제곱식', body: '<code>a²±2ab+b² = (a±b)²</code>' },
+      { title: 'x²+(a+b)x+ab', body: '<code>= (x+a)(x+b)</code>' },
+      { title: 'acx²+(ad+bc)x+bd', body: '<code>= (ax+b)(cx+d)</code>' },
+    ]
+  },
+  {
+    id: 'c3', title: '이차방정식',
+    emoji: 'x²',
+    formulas: [
+      { title: '근의 공식', body: '<code>x = (-b ± √(b²-4ac)) / 2a</code>' },
+      { title: '판별식 D', body: '<code>D = b²-4ac</code><br>D>0: 두 실근<br>D=0: 중근<br>D<0: 허근' },
+      { title: '근과 계수의 관계', body: '두 근 α, β에 대해:<br><code>α+β = -b/a</code><br><code>αβ = c/a</code>' },
+    ]
+  },
+  {
+    id: 'c4', title: '이차함수',
+    emoji: '∪',
+    formulas: [
+      { title: '기본형', body: '<code>y = ax²</code><br>a>0: 아래로 볼록<br>a<0: 위로 볼록' },
+      { title: '표준형 (꼭짓점)', body: '<code>y = a(x-p)² + q</code><br>꼭짓점: <code>(p, q)</code>' },
+      { title: '일반형', body: '<code>y = ax² + bx + c</code><br>꼭짓점 x좌표: <code>x = -b/2a</code>' },
+    ]
+  },
+  {
+    id: 'c5', title: '삼각비',
+    emoji: '△',
+    formulas: [
+      { title: '삼각비 정의', body: '<code>sinA = 대변/빗변</code><br><code>cosA = 밑변/빗변</code><br><code>tanA = 대변/밑변</code>' },
+      { title: '특수각', body: '30°: sin=1/2, cos=√3/2<br>45°: sin=cos=√2/2<br>60°: sin=√3/2, cos=1/2' },
+      { title: 'sin²+cos²=1', body: '<code>sin²A + cos²A = 1</code>' },
+    ]
+  },
+  {
+    id: 'c6', title: '원의 성질',
+    emoji: '○',
+    formulas: [
+      { title: '원의 접선', body: '접선은 접점을 지나는 반지름에 수직' },
+      { title: '원주각', body: '<code>원주각 = 중심각 × 1/2</code><br>같은 호의 원주각은 모두 같다' },
+      { title: '원에 내접하는 사각형', body: '마주보는 두 각의 합 = 180°' },
+    ]
+  },
+  {
+    id: 'c7', title: '통계',
+    emoji: '📊',
+    formulas: [
+      { title: '대푯값', body: '평균 = 합계 ÷ 개수<br>중앙값: 크기순 중간값<br>최빈값: 가장 많은 값' },
+      { title: '분산', body: '<code>분산 = Σ(x-평균)²/n</code>' },
+      { title: '표준편차', body: '<code>표준편차 = √분산</code>' },
+    ]
+  },
+];
+
+let currentChapter = CHAPTERS[0];
+let currentMode = 'study';
+let score = { correct: 0, wrong: 0 };
+let wrongNote = [];
+let isLoading = false;
+
+function init() {
+  if (!window.ANTHROPIC_API_KEY) {
+    document.getElementById('modal-bg').style.display = 'flex';
+  } else {
+    document.getElementById('modal-bg').style.display = 'none';
+    startSession();
+  }
+  renderChapterList();
+}
+
+function saveApiKey() {
+  const v = document.getElementById('api-input').value.trim();
+  if (!v.startsWith('sk-ant-')) { alert('올바른 API 키를 입력해주세요 (sk-ant-로 시작)'); return; }
+  window.ANTHROPIC_API_KEY = v;
+  localStorage.setItem('yejun_moojoon_api_key', v);
+  document.getElementById('modal-bg').style.display = 'none';
+  startSession();
+}
+
+function clearApiKey() {
+  localStorage.removeItem('yejun_moojoon_api_key');
+  window.ANTHROPIC_API_KEY = '';
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('modal-bg').style.display = 'flex';
+}
+
+function startSession() {
+  const msgs = document.getElementById('messages');
+  msgs.innerHTML = '';
+  addWelcomeMessage();
+  renderFormulas();
+}
+
+function addWelcomeMessage() {
+  const welcomes = [
+    `예준아 안녕! 😊 오늘부터 너와 수학공부를 함께할 <strong>무준쌤</strong>이야!<br><br>중3 수학, 생각보다 어렵지 않아~ 무준쌤이랑 같이 하면 금방 실력 늘 거야! 💪<br><br>오늘은 뭐부터 공부할까? 왼쪽에서 단원 골라봐! ✨`,
+    `예준아, 안녕! 반가워~ 😄<br>나는 오늘부터 너의 수학 선생님 <strong>무준쌤</strong>이야!<br><br>중3 수학 같이 정복해보자고! 어려운 거 있으면 언제든지 물어봐~ 😊<br><br><span class="tip">💡 팁: 왼쪽 사이드바에서 단원을 선택하면 개념 설명을 해줄게!</span>`,
+  ];
+  const txt = welcomes[Math.floor(Math.random() * welcomes.length)];
+  appendAIMsg(txt);
+  setQuickBtns(['단원 설명해줘', '문제 풀어볼게', '시험 봐볼까?', '공식 알려줘']);
+}
+
+function renderChapterList() {
+  const el = document.getElementById('chapter-list');
+  el.innerHTML = CHAPTERS.map((ch, i) => `
+    <div class="chapter-item ${ch.id === currentChapter.id ? 'active' : ''}" onclick="selectChapter('${ch.id}')">
+      <span class="chapter-dot"></span>
+      <span style="font-size:12px;margin-right:4px;">${ch.emoji}</span>
+      <span>${ch.title}</span>
+    </div>
+  `).join('');
+}
+
+function selectChapter(id) {
+  currentChapter = CHAPTERS.find(c => c.id === id);
+  renderChapterList();
+  renderFormulas();
+  document.getElementById('messages').innerHTML = '';
+  const picks = [
+    `오, <strong>${currentChapter.title}</strong>구나! 좋아~ 😊<br>무준쌤이 쉽게 설명해줄게! 뭐가 제일 헷갈려?`,
+    `<strong>${currentChapter.title}</strong>! 이거 중요한 단원이야~ ✨<br>같이 차근차근 해보자! 어떻게 시작할까?`,
+    `예준아, <strong>${currentChapter.title}</strong> 선택했네! 👍<br>개념부터 할까, 바로 문제 풀어볼까?`,
+  ];
+  appendAIMsg(picks[Math.floor(Math.random() * picks.length)]);
+  switchMode(currentMode);
+  setQuickBtns(['개념 설명해줘', '예제 문제 내줘', '공식 정리해줘', '어디서 많이 나와?']);
+}
+
+function renderFormulas() {
+  const el = document.getElementById('formula-cards');
+  if (!currentChapter) return;
+  el.innerHTML = currentChapter.formulas.map(f => `
+    <div class="formula-card">
+      <div class="formula-card-title">${f.title}</div>
+      <div class="formula-card-body">${f.body}</div>
+    </div>
+  `).join('');
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  ['study','quiz','exam'].forEach(m => {
+    document.getElementById(`tab-${m}`).classList.toggle('active', m === mode);
+  });
+  const titles = { study: '💡 개념 학습', quiz: '✏️ 문제 풀기', exam: '🎯 단원 시험' };
+  document.getElementById('mode-title').textContent = titles[mode];
+
+  if (mode === 'study') {
+    setQuickBtns(['개념 설명해줘', '예시 들어줘', '공식 알려줘', '실생활 예시는?']);
+  } else if (mode === 'quiz') {
+    setQuickBtns(['쉬운 문제 내줘', '보통 문제 내줘', '어려운 문제 내줘', '다른 문제 내줘']);
+  } else {
+    setQuickBtns(['시험 시작!', '5문제 내줘', '10문제 내줘']);
+  }
+}
+
+function setQuickBtns(btns) {
+  document.getElementById('quick-btns').innerHTML = btns.map(b =>
+    `<button class="quick-btn" onclick="sendQuick('${b}')">${b}</button>`
+  ).join('');
+}
+
+function goHome() {
+  document.getElementById('messages').innerHTML = '';
+  addWelcomeMessage();
+}
+
+function showFormulas() {
+  document.getElementById('messages').innerHTML = '';
+  const html = `<strong>${currentChapter.title}</strong> 핵심 공식 정리야 예준아! 📐<br><br>` +
+    currentChapter.formulas.map(f =>
+      `<span class="formula">${f.title}: ${f.body.replace(/<[^>]+>/g,'')}</span>`
+    ).join('') +
+    '<br><span class="tip">💡 공식은 외우는 것보다 이해하는 게 중요해! 왜 이런 공식이 나왔는지 궁금하면 물어봐~ 😊</span>';
+  appendAIMsg(html);
+}
+
+function showWrongNote() {
+  document.getElementById('messages').innerHTML = '';
+  if (wrongNote.length === 0) {
+    appendAIMsg('아직 틀린 문제가 없어! 예준이 잘하고 있는 거야~ 😄<br>계속 열심히 해보자!');
+  } else {
+    appendAIMsg(`틀린 문제 ${wrongNote.length}개야. 다시 한번 풀어보자! 💪<br><br>` + wrongNote.slice(-3).join('<br>'));
+  }
+}
+
+function buildSystemPrompt() {
+  const modePrompts = {
+    study: `지금은 개념 학습 모드야. ${currentChapter.title} 단원의 개념을 예준이가 이해하기 쉽게 설명해줘. 중3 수준에 맞게, 어렵지 않게.`,
+    quiz: `지금은 문제 풀기 모드야. ${currentChapter.title} 관련 문제를 내줘. 요청하면 난이도별로 문제를 만들어줘.`,
+    exam: `지금은 시험 모드야. ${currentChapter.title} 단원 전반을 아우르는 시험 문제를 출제해줘.`
+  };
+
+  return `너는 "무준쌤"이야. 중학교 3학년 예준이의 수학 과외 선생님.
+  
+성격:
+- 친절하고 따뜻하게 "예준아~" 하고 자주 불러줘
+- 어렵지 않게 설명하고, 칭찬도 자주 해줘
+- "잘했어!", "맞아!", "예준이 실력 느는 것 같은데?" 같은 말 많이 써줘
+- 이모지 적당히 사용 (😊 💪 ✨ 👍 등)
+- 무준쌤 본인 언급할 때 "무준쌤이" 라고 해줘
+
+현재 단원: ${currentChapter.title}
+모드: ${modePrompts[currentMode]}
+
+문제를 낼 때는 반드시 이 JSON 형식으로만 줘 (마크다운 없이):
+객관식: {"type":"mcq","question":"문제","choices":["①번","②번","③번","④번","⑤번"],"correct":0,"explanation":"해설"}
+단답형: {"type":"short","question":"문제","answer":"정답","explanation":"해설"}
+
+설명할 때는 수식을 [ ] 안에 넣어줘. 예: [x² + 2x + 1 = (x+1)²]
+한 번에 너무 많은 내용보다는 핵심만, 이해하기 쉽게 설명해줘.`;
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+  const inp = document.getElementById('user-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = ''; autoResize(inp);
+  appendUserMsg(text);
+  await callClaude(text);
+}
+
+async function sendQuick(text) {
+  if (isLoading) return;
+  appendUserMsg(text);
+  await callClaude(text);
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+async function callClaude(userText) {
+  if (!window.ANTHROPIC_API_KEY) { document.getElementById('modal-bg').style.display='flex'; return; }
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+
+  const loadingId = 'loading-' + Date.now();
+  const loadingDiv = document.createElement('div');
+  loadingDiv.className = 'msg ai';
+  loadingDiv.id = loadingId;
+  const img = getRandomMoojoon();
+  loadingDiv.innerHTML = `
+    <div class="msg-avatar"><img src="${img}" alt="무준쌤" onerror="this.src='${MOOJOON_IMGS[0]}'"></div>
+    <div class="msg-body">
+      <div class="msg-name">무준쌤</div>
+      <div class="msg-bubble">
+        <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+      </div>
+    </div>`;
+  document.getElementById('messages').appendChild(loadingDiv);
+  scrollBottom();
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': window.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1200,
+        system: buildSystemPrompt(),
+        messages: [{ role: 'user', content: userText }]
+      })
+    });
+    const data = await resp.json();
+    const txt = data.content?.[0]?.text || '앗, 무준쌤이 잠깐 딴생각했나봐 😅 다시 질문해줘!';
+    document.getElementById(loadingId)?.remove();
+    processResponse(txt);
+  } catch(e) {
+    document.getElementById(loadingId)?.remove();
+    appendAIMsg('무준쌤이 잠깐 연결이 끊겼어 😅 다시 한번 눌러봐!');
+  }
+  isLoading = false;
+  document.getElementById('send-btn').disabled = false;
+}
+
+function processResponse(txt) {
+  // JSON 문제 감지
+  const jsonMatch = txt.match(/\{[\s\S]*?"type"\s*:\s*"(mcq|short)"[\s\S]*?\}/);
+  if (jsonMatch) {
+    try {
+      const prob = JSON.parse(jsonMatch[0]);
+      // 앞뒤 텍스트
+      const before = txt.substring(0, jsonMatch.index).trim();
+      const after = txt.substring(jsonMatch.index + jsonMatch[0].length).trim();
+      if (before) appendAIMsg(formatReply(before));
+      appendProblemMsg(prob);
+      if (after) appendAIMsg(formatReply(after));
+      return;
+    } catch(e) {}
+  }
+  appendAIMsg(formatReply(txt));
+}
+
+function formatReply(txt) {
+  return txt
+    .replace(/\[([^\]]+)\]/g, '<span class="formula">$1</span>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>');
+}
+
+function appendUserMsg(txt) {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg user';
+  div.innerHTML = `
+    <div class="msg-avatar">예</div>
+    <div class="msg-body">
+      <div class="msg-name">예준</div>
+      <div class="msg-bubble">${escHtml(txt)}</div>
+    </div>`;
+  msgs.appendChild(div);
+  scrollBottom();
+}
+
+function appendAIMsg(html) {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  const img = getRandomMoojoon();
+  div.innerHTML = `
+    <div class="msg-avatar"><img src="${img}" alt="무준쌤" onerror="this.src='${MOOJOON_IMGS[0]}'"></div>
+    <div class="msg-body">
+      <div class="msg-name">무준쌤</div>
+      <div class="msg-bubble">${html}</div>
+    </div>`;
+  msgs.appendChild(div);
+  scrollBottom();
+}
+
+function appendProblemMsg(prob) {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  const img = getRandomMoojoon();
+  const probId = 'prob-' + Date.now();
+  let innerHtml = '';
+
+  if (prob.type === 'mcq') {
+    const choices = (prob.choices || []).map((c, i) => `
+      <button class="choice-btn" id="${probId}_c${i}"
+        onclick="checkMCQ('${probId}', ${i}, ${prob.correct}, \`${escJs(prob.explanation)}\`)">
+        ${escHtml(c)}
+      </button>`).join('');
+    innerHtml = `
+      <div class="problem-card">
+        <div class="prob-num">📌 ${currentMode === 'exam' ? '시험 문제' : '연습 문제'} · ${currentChapter.title}</div>
+        <div class="prob-text">${escHtml(prob.question)}</div>
+        <div class="choices">${choices}</div>
+        <div id="${probId}_result"></div>
+      </div>`;
+  } else {
+    innerHtml = `
+      <div class="problem-card">
+        <div class="prob-num">📌 ${currentMode === 'exam' ? '시험 문제' : '연습 문제'} · ${currentChapter.title}</div>
+        <div class="prob-text">${escHtml(prob.question)}</div>
+        <div class="answer-row">
+          <input class="answer-input" id="${probId}_inp" placeholder="정답 입력..." />
+          <button class="submit-ans" onclick="checkShort('${probId}', \`${escJs(prob.answer)}\`, \`${escJs(prob.explanation)}\`)">확인</button>
+        </div>
+        <div id="${probId}_result"></div>
+      </div>`;
+  }
+
+  div.innerHTML = `
+    <div class="msg-avatar"><img src="${img}" alt="무준쌤" onerror="this.src='${MOOJOON_IMGS[0]}'"></div>
+    <div class="msg-body">${innerHtml}</div>`;
+  msgs.appendChild(div);
+  scrollBottom();
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escJs(s) {
+  return String(s).replace(/`/g,'\\`').replace(/\\/g,'\\\\');
+}
+
+function checkMCQ(id, chosen, correct, explanation) {
+  for (let i = 0; i < 5; i++) {
+    const btn = document.getElementById(`${id}_c${i}`);
+    if (!btn) continue;
+    btn.disabled = true;
+    if (i === correct) btn.classList.add('correct');
+    else if (i === chosen) btn.classList.add('wrong');
+  }
+  const res = document.getElementById(id + '_result');
+  const praiseList = ['잘했어! 역시 예준이야! 🎉', '정답! 무준쌤이 기특해~ 😊', '맞았어! 예준이 실력 느는 것 같은데? 💪', '오! 정답! 👍'];
+  const wrongList = ['아쉽다~ 틀렸어. 해설 잘 읽어봐! 😅', '이번엔 틀렸지만 괜찮아! 다음엔 맞출 수 있어 💪', '음~ 아쉬워! 같이 다시 봐보자 😊'];
+  if (chosen === correct) {
+    score.correct++;
+    const praise = praiseList[Math.floor(Math.random() * praiseList.length)];
+    res.innerHTML = `<div class="result-badge ok">✓ ${praise}</div><div style="font-size:13px;color:var(--text2);margin-top:8px;">${formatReply(explanation)}</div>`;
+  } else {
+    score.wrong++;
+    wrongNote.push(document.getElementById(`${id}_c0`)?.closest('.problem-card')?.querySelector('.prob-text')?.textContent || '');
+    const wrong = wrongList[Math.floor(Math.random() * wrongList.length)];
+    res.innerHTML = `<div class="result-badge ng">✗ ${wrong}</div><div style="font-size:13px;color:var(--text2);margin-top:8px;">${formatReply(explanation)}</div>`;
+  }
+  updateScore();
+}
+
+function checkShort(id, answer, explanation) {
+  const inp = document.getElementById(id + '_inp');
+  const userAns = inp.value.trim();
+  if (!userAns) return;
+  inp.disabled = true;
+  const res = document.getElementById(id + '_result');
+  const correct = userAns === answer || normalizeNum(userAns) === normalizeNum(answer);
+  const praiseList = ['정답이야! 예준이 최고~ 🎉', '맞았어! 역시! 💪', '오, 정답! 잘했어 😊'];
+  const wrongList = [`아쉽다~ 정답은 <strong>${answer}</strong>야! 😅`, `이번엔 틀렸어. 정답: <strong>${answer}</strong>. 다음엔 꼭! 💪`];
+  if (correct) {
+    inp.classList.add('correct');
+    score.correct++;
+    res.innerHTML = `<div class="result-badge ok">✓ ${praiseList[Math.floor(Math.random()*praiseList.length)]}</div><div style="font-size:13px;color:var(--text2);margin-top:8px;">${formatReply(explanation)}</div>`;
+  } else {
+    inp.classList.add('wrong');
+    score.wrong++;
+    res.innerHTML = `<div class="result-badge ng">✗ ${wrongList[Math.floor(Math.random()*wrongList.length)]}</div><div style="font-size:13px;color:var(--text2);margin-top:8px;">${formatReply(explanation)}</div>`;
+  }
+  updateScore();
+}
+
+function normalizeNum(s) {
+  return s.replace(/\s/g,'').replace(/,/g,'.');
+}
+
+function updateScore() {
+  document.getElementById('total-correct').textContent = score.correct;
+  document.getElementById('total-wrong').textContent = score.wrong;
+}
+
+function scrollBottom() {
+  const el = document.getElementById('messages');
+  setTimeout(() => { el.scrollTop = el.scrollHeight; }, 50);
+}
+
+init();
+</script>
+</body>
+</html>
